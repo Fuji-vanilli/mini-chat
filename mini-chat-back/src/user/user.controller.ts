@@ -6,12 +6,12 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Get('all')
-    findAll(): string {
+    async findAll() {
         return this.userService.getUsers();
     }
 
     @Get('/:id')
-    findOne(@Param('id') id: number): string {
+    findOne(@Param('id') id: string) {
         return this.userService.getUserById(id);
     }
 }
