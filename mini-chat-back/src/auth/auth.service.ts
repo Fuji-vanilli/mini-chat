@@ -3,11 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { compare, hash } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
-
-export type UserLoginBody = {
-    email: string;
-    password: string;
-}
+import { LoginUserDto } from './dto/login-user.dto';
 
 export type UserPayload = {
     userId: string;
@@ -20,7 +16,7 @@ export class AuthService {
         private readonly prismaService: PrismaService,
         private readonly jwtService: JwtService) {}
 
-    async login(userLoginBody: UserLoginBody) {
+    async login(userLoginBody: LoginUserDto) {
         const existingUser = await this.prismaService.user.findUnique({
             where: { email: userLoginBody.email },
         });
