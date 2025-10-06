@@ -8,6 +8,11 @@ export type UserLoginBody = {
     password: string;
 }
 
+export type UserPayload = {
+    userId: string;
+    email: string;
+}
+
 @Injectable()
 export class AuthService {
     constructor(
@@ -31,7 +36,7 @@ export class AuthService {
             throw new Error('Error password !!!');
         }
 
-        return await this.authenticateUser(existingUser.id, existingUser.email);
+        return await this.authenticateUser({ userId: existingUser.id, email: existingUser.email });
     }
 
     private async hashPassword(password: string) {
@@ -43,8 +48,8 @@ export class AuthService {
         return await compare(password, hashedPassword);
     }
 
-    async authenticateUser(userId: string, email: string) {
-        const payload = { sub: userId, email };
+    async authenticateUser(UserPayload: UserPayload) {
+        const payload = { sub: UserPayload.userId, email: UserPayload.email };
         return await this.jwtService.signAsync(payload);
     }
 }
