@@ -1,7 +1,6 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
-import type { ActionFunctionArgs } from "react-router-dom";
-import { object } from "zod";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
 
 export function meta({}: Route.MetaArgs) {
@@ -15,6 +14,10 @@ const loginSchema = z.object({
   email: z.string(),
   password: z.string(),
 });
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  return { isLoggedIn: false};
+}; 
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();

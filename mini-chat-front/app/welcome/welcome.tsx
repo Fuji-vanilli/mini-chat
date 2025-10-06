@@ -1,6 +1,8 @@
-import { Form, type ActionFunctionArgs } from "react-router";
+import { Form, useLoaderData, type ActionFunctionArgs } from "react-router";
+import type { loader } from "~/routes/home";
 
 export function Welcome() {
+  const data = useLoaderData<typeof loader>();
   return (
     <main className="flex items-center justify-center pt-16 pb-4 min-h-screen bg-gray-900">
       <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
@@ -36,3 +38,7 @@ export function Welcome() {
     </main>
   );
 }
+function userLoaderData() {
+  throw new Error("Function not implemented.");
+}
+
