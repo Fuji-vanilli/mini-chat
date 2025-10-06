@@ -1,6 +1,8 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
 import type { ActionFunctionArgs } from "react-router-dom";
+import { object } from "zod";
+import { z } from "zod";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,6 +10,11 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
+
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -23,7 +30,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   
   return null;
 };
-
 
 export default function Home() {
   return <Welcome />;

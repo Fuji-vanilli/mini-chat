@@ -2,17 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { compare, hash } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from './dto/create-user.dto';
 
 export type UserLoginBody = {
     email: string;
     password: string;
-}
-
-export type UserRegisterBody = {
-    email: string;
-    password: string;
-    firstname?: string;
-    lastname?: string;
 }
 
 export type UserPayload = {
@@ -46,7 +40,7 @@ export class AuthService {
         return await this.authenticateUser({ userId: existingUser.id, email: existingUser.email });
     }
 
-    async register(userRegisterBody: UserRegisterBody) {
+    async register(userRegisterBody: CreateUserDto) {
         const existingUser = await this.prismaService.user.findUnique({
             where: { email: userRegisterBody.email },
         });

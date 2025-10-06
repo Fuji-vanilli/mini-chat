@@ -11,11 +11,14 @@
   "dependencies": {
     "@react-router/node": "^7.9.2",
     "@react-router/serve": "^7.9.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
     "isbot": "^5.1.31",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router": "^7.9.3",
-    "react-router-dom": "^7.9.3"
+    "react-router-dom": "^7.9.3",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@react-router/dev": "^7.9.2",
