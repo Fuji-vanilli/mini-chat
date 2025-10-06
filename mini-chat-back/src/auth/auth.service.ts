@@ -8,6 +8,13 @@ export type UserLoginBody = {
     password: string;
 }
 
+export type UserRegisterBody = {
+    email: string;
+    password: string;
+    firstname?: string;
+    lastname?: string;
+}
+
 export type UserPayload = {
     userId: string;
     email: string;
@@ -39,6 +46,28 @@ export class AuthService {
         return await this.authenticateUser({ userId: existingUser.id, email: existingUser.email });
     }
 
+    async register(userRegisterBody: UserRegisterBody) {
+        const existingUser = await this.prismaService.user.findUnique({
+            where: { email: userRegisterBody.email },
+        });
+
+        if (existingUser) {
+            throw new Error('User already exists !!!');
+        }
+
+        const hashedPassword = await this.hashPassword(userRegisterBody.password);
+        const newUser = await this.prismaService.user.create({
+            data: {
+                email: userRegisterBody.email,
+                password: hashedPassword,
+                firstname: userRegisterBody.firstname!,
+                lastname: userRegisterBody.lastname!,
+            },
+        });
+
+        return await this.authenticateUser({ userId: newUser.id, email: newUser.email });
+    }
+
     private async hashPassword(password: string) {
         const hashedPassword = await hash(password, 10);
         return hashedPassword;
@@ -48,8 +77,10 @@ export class AuthService {
         return await compare(password, hashedPassword);
     }
 
-    async authenticateUser(UserPayload: UserPayload) {
-        const payload = { sub: UserPayload.userId, email: UserPayload.email };
-        return await this.jwtService.signAsync(payload);
+    async authenticateUser({ userId, email }: UserPayload) {
+        const payload = { sub: userId, email };
+        return {
+            access_token: await this.jwtService.signAsync(payload),
+        };
     }
 }
