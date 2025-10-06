@@ -15,6 +15,7 @@ export class AuthController {
     //@UseGuards(JwtAuthGuard)
     @Post('login')
     async login(@Body() userLoginBody: UserLoginBody) {
+        console.log(userLoginBody);
         return await this.authService.login(userLoginBody);
     }
 
