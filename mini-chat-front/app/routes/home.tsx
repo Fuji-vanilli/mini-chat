@@ -1,8 +1,8 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
 import { redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router-dom";
-import { json, z } from "zod";
-import { commitUserToken, getUserToken } from "~/sessions.server";
+import {  z } from "zod";
+import { commitUserToken } from "~/sessions.server";
 import { getAuthenticatedUser } from "~/auth.server";
 
 export function meta({}: Route.MetaArgs) {
@@ -23,6 +23,8 @@ const tokenSchema = z.object({
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getAuthenticatedUser(request);
+  console.log("user : ", user);
+  
   return { user };
 }; 
 
@@ -36,7 +38,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     body: JSON.stringify(parsedData), 
     headers: {"Content-Type": "application/json"},
   });
-
 
   const { access_token } = tokenSchema.parse(await response.json());
   console.log(access_token);

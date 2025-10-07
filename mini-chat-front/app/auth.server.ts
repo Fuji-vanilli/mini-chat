@@ -9,12 +9,15 @@ const getAuthenticatedUserSchema = z.object({
 });
 
 export const getAuthenticatedUser = async (request: Request) => {
-    const response = await fetch("http://localhost:3000/auth/me", {
+    const response = await fetch("http://localhost:3000/auth/user", {
         headers: {
+            "content-type": "application/json",
             Authorization: `Bearer ${await getUserToken(request)}`,
         },
     });
 
+    console.log("response : ", response);
+    
     if (!response.ok) return null;
 
     const data = await response.json();
