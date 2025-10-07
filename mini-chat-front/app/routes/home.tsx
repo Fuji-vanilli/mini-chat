@@ -3,6 +3,7 @@ import { Welcome } from "../welcome/welcome";
 import { redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router-dom";
 import { json, z } from "zod";
 import { commitUserToken, getUserToken } from "~/sessions.server";
+import { getAuthenticatedUser } from "~/auth.server";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -21,19 +22,18 @@ const tokenSchema = z.object({
 });
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const userToken = await getUserToken(request);
-  const isLoggedIn = Boolean(userToken);
-  return { isLoggedIn };
+  const user = await getAuthenticatedUser(request);
+  return { user };
 }; 
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => { 
   const formData = await request.formData();
   const jsonData = Object.fromEntries(formData);
   const parsedData = loginSchema.parse(jsonData);
   
   const response = await fetch("http://localhost:3000/auth/login", {
     method: "POST",
-    body: JSON.stringify(parsedData),
+    body: JSON.stringify(parsedData), 
     headers: {"Content-Type": "application/json"},
   });
 

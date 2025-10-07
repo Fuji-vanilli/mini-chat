@@ -8,7 +8,7 @@ const getAuthenticatedUserSchema = z.object({
   lastname: z.string(),
 });
 
-const getAuthenticatedUser = async (request: Request) => {
+export const getAuthenticatedUser = async (request: Request) => {
     const response = await fetch("http://localhost:3000/auth/me", {
         headers: {
             Authorization: `Bearer ${await getUserToken(request)}`,
