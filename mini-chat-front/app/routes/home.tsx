@@ -1,7 +1,8 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router-dom";
-import { z } from "zod";
+import { redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router-dom";
+import { json, z } from "zod";
+import { commitUserToken, getUserToken } from "~/sessions.server";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -15,8 +16,14 @@ const loginSchema = z.object({
   password: z.string(),
 });
 
+const tokenSchema = z.object({
+  access_token: z.string(),
+});
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  return { isLoggedIn: false};
+  const userToken = await getUserToken(request);
+  const isLoggedIn = Boolean(userToken);
+  return { isLoggedIn };
 }; 
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -29,12 +36,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     body: JSON.stringify(parsedData),
     headers: {"Content-Type": "application/json"},
   });
-  console.log(parsedData);
 
-  const token = await response.json();
-  console.log({token});
-  
-  return null;
+
+  const { access_token } = tokenSchema.parse(await response.json());
+  console.log(access_token);
+  const headers = new Headers();
+  headers.set("Set-Cookie", await commitUserToken(request, access_token));
+
+  return redirect("", {
+    headers : {
+      "Set-Cookie": await commitUserToken(request, access_token)
+    }
+  });
 };
 
 export default function Home() {

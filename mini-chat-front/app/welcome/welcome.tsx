@@ -2,7 +2,7 @@ import { Form, useLoaderData, type ActionFunctionArgs } from "react-router";
 import type { loader } from "~/routes/home";
 
 export function Welcome() {
-  const data = useLoaderData<typeof loader>();
+  const { isLoggedIn } = useLoaderData<typeof loader>();
   return (
     <main className="flex items-center justify-center pt-16 pb-4 min-h-screen bg-gray-900">
       <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
@@ -12,6 +12,7 @@ export function Welcome() {
 
         <div className="max-w-[300px] w-full space-y-6 px-4">
           <nav className="rounded-3xl border border-gray-700 p-6 space-y-4">
+            <span>{isLoggedIn ? "✅" : "⛔"}</span>
             <Form method="post" className="flex flex-col gap-4">
               <input
                 type="email"
